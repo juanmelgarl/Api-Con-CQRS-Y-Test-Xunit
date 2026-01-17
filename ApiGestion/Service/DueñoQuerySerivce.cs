@@ -1,4 +1,5 @@
-﻿using ApiGestion.DTOS.Response;
+﻿using ApiGestion.DTOS.Request;
+using ApiGestion.DTOS.Response;
 using ApiGestion.Models;
 using ApiGestion.Pagination;
 using ApiGestion.Repository;
@@ -22,6 +23,7 @@ namespace ApiGestion.Service
             Nombre = d.Nombre,
             Telefono = d.Telefono,
         };
+       
         public async Task<List<Dueñoresponse>> GetAllAsync(PaginationRequest pagination)
         {
             return (await _repo.GetAll(pagination)).Select(Toresponse).ToList();

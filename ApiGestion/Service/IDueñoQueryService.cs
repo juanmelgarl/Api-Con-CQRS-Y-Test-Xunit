@@ -1,4 +1,5 @@
-﻿using ApiGestion.DTOS.Response;
+﻿using ApiGestion.DTOS.Request;
+using ApiGestion.DTOS.Response;
 using ApiGestion.Pagination;
 
 namespace ApiGestion.Service

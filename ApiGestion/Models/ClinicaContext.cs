@@ -15,31 +15,31 @@ public partial class ClinicaContext : DbContext
     {
     }
 
-    public virtual DbSet<Apliacion> Apliacions { get; set; }
-
-    public virtual DbSet<Consulta> Consultas { get; set; }
+  //  public virtual DbSet<Apliacion> Apliacions { get; set; }
+    public virtual DbSet<Usuarios> Usuarios { get; set; }
+      public virtual DbSet<Consulta> Consultas { get; set; }
 
     public virtual DbSet<Dueño> Dueños { get; set; }
 
-    public virtual DbSet<Especialidad> Especialidads { get; set; }
+     public virtual DbSet<Especialidad> Especialidads { get; set; }
 
-    public virtual DbSet<Especie> Especies { get; set; }
+     public virtual DbSet<Especie> Especies { get; set; }
 
-    public virtual DbSet<Foto> Fotos { get; set; }
+      public virtual DbSet<Foto> Fotos { get; set; }
 
-    public virtual DbSet<Mascotum> Mascota { get; set; }
+     public virtual DbSet<Mascotum> Mascota { get; set; }
 
-    public virtual DbSet<Medicamento> Medicamentos { get; set; }
+     public virtual DbSet<Medicamento> Medicamentos { get; set; }
 
-    public virtual DbSet<Raza> Razas { get; set; }
+      public virtual DbSet<Raza> Razas { get; set; }
 
-    public virtual DbSet<Tipovacuna> Tipovacunas { get; set; }
+      public virtual DbSet<Tipovacuna> Tipovacunas { get; set; }
 
-    public virtual DbSet<Tratamiento> Tratamientos { get; set; }
+     public virtual DbSet<Tratamiento> Tratamientos { get; set; }
 
-    public virtual DbSet<Veterinario> Veterinarios { get; set; }
+      public virtual DbSet<Veterinario> Veterinarios { get; set; }
 
-    public virtual DbSet<Veterinarioespecialidad> Veterinarioespecialidads { get; set; }
+     public virtual DbSet<Veterinarioespecialidad> Veterinarioespecialidads { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see https://go.microsoft.com/fwlink/?LinkId=723263.

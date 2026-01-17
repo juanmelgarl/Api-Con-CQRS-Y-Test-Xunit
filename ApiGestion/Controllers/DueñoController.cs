@@ -2,6 +2,7 @@
 using ApiGestion.DTOS.Response;
 using ApiGestion.Pagination;
 using ApiGestion.Service;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -18,12 +19,14 @@ namespace ApiGestion.Controllers
             _command = command;
             _Query = query;
         }
+        [Authorize]
         [HttpGet]
         public async Task<ActionResult<List<Dueñoresponse>>> Obtener([FromQuery]PaginationRequest pagination)
         {
             var people = await _Query.GetAllAsync(pagination);
             return Ok(people);
         }
+        [Authorize]
         [HttpPut("{id}")]
         public async Task<ActionResult<Dueñoresponse>> Actualizar([FromQuery]UpdateDTO dto,int id)
         {
@@ -43,7 +46,8 @@ namespace ApiGestion.Controllers
             return Ok();
         }
 
-        
+        [Authorize]
+
         [HttpGet("{id}")]
         public async Task<ActionResult<Dueñoresponse>> Obtenerporid([FromRoute]int id)
         {
@@ -58,6 +62,7 @@ namespace ApiGestion.Controllers
                 return NotFound();
             return Ok(people);
         }
+        [Authorize]
         [HttpPost]
         public async Task<ActionResult<Dueñoresponse>> CrearDueño([FromBody] CreateDTO dto)
         {
