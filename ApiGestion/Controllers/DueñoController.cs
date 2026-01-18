@@ -5,6 +5,7 @@ using ApiGestion.Service;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Caching.Memory;
 
 namespace ApiGestion.Controllers
 {
@@ -12,24 +13,36 @@ namespace ApiGestion.Controllers
     [ApiController]
     public class DueñoController : ControllerBase
     {
+        private readonly IMemoryCache _Cache;
         private readonly IDueñoCommand _command;
         private readonly IDueñoQueryService _Query;
-        public DueñoController(IDueñoCommand command, IDueñoQueryService query)
+        private readonly ILogger<DueñoController> _logger;
+        private const string Cachekey = "listaproducots";
+        public DueñoController(IDueñoCommand command, IDueñoQueryService query,IMemoryCache cache, ILogger<DueñoController>logger)
         {
             _command = command;
             _Query = query;
+            _Cache = cache;
+            _logger = logger;
         }
         [Authorize]
         [HttpGet]
-        public async Task<ActionResult<List<Dueñoresponse>>> Obtener([FromQuery]PaginationRequest pagination)
+        public async Task<ActionResult<List<Dueñoresponse>>> Obtener([FromQuery] PaginationRequest pagination)
         {
-            var people = await _Query.GetAllAsync(pagination);
-            return Ok(people);
+            if (!_Cache.TryGetValue(Cachekey, out List<Dueñoresponse> dueño))
+            {
+                 dueño = await _Query.GetAllAsync(pagination);
+                var CacheOptions = new MemoryCacheEntryOptions()
+                .SetAbsoluteExpiration(TimeSpan.FromMinutes(5));
+                _Cache.Set(Cachekey, dueño, CacheOptions);
+            }
+            _logger.LogInformation("Se obtuvo el Listado de Dueños");
+            return Ok(dueño);
         }
         [Authorize]
         [HttpPut("{id}")]
-        public async Task<ActionResult<Dueñoresponse>> Actualizar([FromQuery]UpdateDTO dto,int id)
-        {
+        public async Task<ActionResult> Actualizar(int id, [FromBody] UpdateDTO dto)
+        { 
             if (dto is null)
             {
                 return BadRequest();
@@ -43,25 +56,30 @@ namespace ApiGestion.Controllers
             {
                 return NotFound();
             }
+            _Cache.Remove(Cachekey);
+            _logger.LogInformation("Se actualizo la informacion de un dueño");
             return Ok();
         }
 
         [Authorize]
 
-        [HttpGet("{id}")]
-        public async Task<ActionResult<Dueñoresponse>> Obtenerporid([FromRoute]int id)
+        [HttpGet("porid")]
+        public async Task<ActionResult<Dueñoresponse>> Obtenerporid([FromQuery] int id)
         {
             if (id <= 0)
                 return BadRequest();
-            if (!ModelState.IsValid)
+            if (!_Cache.TryGetValue(Cachekey, out Dueñoresponse people))
             {
-                return BadRequest(ModelState);
+                people = await _Query.GetForIdAsync(id);
+                if (people == null)
+                    return NotFound();
+                var cacheoptions = new MemoryCacheEntryOptions()
+                    .SetAbsoluteExpiration(TimeSpan.FromSeconds(5));
+                _Cache.Set(Cachekey, people, cacheoptions);
             }
-            var people = await _Query.GetForIdAsync(id);
-            if (people == null)
-                return NotFound();
-            return Ok(people);
-        }
+                return Ok(people);
+            }
+        
         [Authorize]
         [HttpPost]
         public async Task<ActionResult<Dueñoresponse>> CrearDueño([FromBody] CreateDTO dto)
@@ -75,6 +93,7 @@ namespace ApiGestion.Controllers
                 return BadRequest(ModelState);
             }
             var Dueño = await _command.CreateAsync(dto);
+            _Cache.Remove(Cachekey);
             return Ok(Dueño);
         }
 

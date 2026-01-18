@@ -15,7 +15,7 @@ public partial class ClinicaContext : DbContext
     {
     }
 
-  //  public virtual DbSet<Apliacion> Apliacions { get; set; }
+    public virtual DbSet<Apliacion> Apliacions { get; set; }
     public virtual DbSet<Usuarios> Usuarios { get; set; }
       public virtual DbSet<Consulta> Consultas { get; set; }
 
@@ -84,7 +84,7 @@ public partial class ClinicaContext : DbContext
 
             entity.ToTable("Dueño");
 
-            entity.Property(e => e.Iddueño).ValueGeneratedNever();
+            entity.Property(e => e.Iddueño).ValueGeneratedOnAdd();
             entity.Property(e => e.Direccion)
                 .HasMaxLength(50)
                 .IsUnicode(false);

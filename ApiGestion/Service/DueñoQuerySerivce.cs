@@ -16,12 +16,14 @@ namespace ApiGestion.Service
         }
         private Dueñoresponse Toresponse(Dueño d) => new Dueñoresponse
         {
+           
             IDdueño = d.Iddueño,
             Direccion = d.Direccion,
             Dni = d.Dni,
             Email = d.Email,
-            Nombre = d.Nombre,
+            Nombre = d.Nombre ,
             Telefono = d.Telefono,
+           
         };
        
         public async Task<List<Dueñoresponse>> GetAllAsync(PaginationRequest pagination)
